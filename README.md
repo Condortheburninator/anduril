@@ -19,10 +19,13 @@ I've been looking for an excuse to try out duckdb for a while now.
 
 ## 🎯 Approach
 
-1. load data into warehouse un-transformed
+1. align on data warehouse
+1. load data into warehouse (raw)
 1. given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
     1. convert `transaction_date` from a datetime to a date
 1. build a fact table for inventory
+    1. calendar table
+    1. running total inventory table
 1. run analysis
 
 
