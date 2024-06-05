@@ -37,3 +37,4 @@ I've been looking for an excuse to try out duckdb for a while now.
 
 - [DuckDB Tutorial For Beginners](https://www.youtube.com/watch?v=ZX5FdqzGT1E)
 - [DuckDB Tutorial - DuckDB course for beginners](https://www.youtube.com/watch?v=AjsB6lM2-zw)
+- [Ingesting #csv file from #github into #duckdb](https://www.youtube.com/shorts/49p4HyNFniE)
