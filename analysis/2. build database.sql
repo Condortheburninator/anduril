@@ -229,7 +229,7 @@
 
                 FROM
                         RANGE (
-                                DATE '2020-07-31'
+                                 DATE '2020-07-31'
                                 ,DATE '2023-01-31'
                                 ,INTERVAL 1 DAY
                         )
