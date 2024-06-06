@@ -13,6 +13,8 @@
 
     -- ✅ BIN
 
+        -- SELECT * FROM BIN
+
         CREATE OR REPLACE VIEW DIM_BINS
 
         AS
@@ -78,18 +80,18 @@
 
         ;
 
-        SELECT
-                *
+        -- SELECT
+        --         *
 
-        FROM
-                DIM_COSTS
+        -- FROM
+        --         DIM_COSTS
 
-        WHERE
-                1 = 1
-                AND ITEM_ID = 314
-                AND LOCATION_ID = 102
+        -- WHERE
+        --         1 = 1
+        --         AND ITEM_ID      = 314
+        --         AND LOCATION_ID  = 102
 
-        ;
+        -- ;
 
     -- ✅ INVENTORY_STATUS
 
