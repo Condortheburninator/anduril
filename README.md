@@ -11,28 +11,30 @@
 ```
 `CONNER FERGUSON TAKE HOME ASSESSMENT`
 
-## Overview
-
-I've been looking for an excuse to try out duckdb for a while now.
 
 ---
 
 ## 🎯 Approach
 
-1. align on data warehouse
+1. align on data warehouse --> :duck: duckdb
 1. load data into warehouse (raw)
+1. data quality review
 1. given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
     1. convert `transaction_date` from a datetime to a date
+    1. `ITEM.name` --> `ITEM.ITEM_NAME`
 1. build a fact table for inventory
+    1. JOIN dimensions VIEWS to it
+1. modify FACT_INVENTORY
     1. calendar table
     1. running total inventory table
-1. run analysis
+1. answer questions
 
 
 ---
 
 ## Next Steps
 - model the data in dbt
+- set up daily (nightly) snapshots for inventory
 
 ---
 
