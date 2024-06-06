@@ -1,7 +1,7 @@
 # Analytics Engineer Case Study
 
 ## Goal
-1. Provide you, the candidate, with a representative example of the type of data and  data modeling work expected of the Analytics Engineer
+1. Provide you, the candidate, with a representative example of the type of data and data modeling work expected of the Analytics Engineer
 
 1. Enable Anduril to assess your technical skills in an environment as similar as we’d expect you to work on the job
 
