@@ -16,7 +16,7 @@
 1. The case study comes with 6 csvs that should be loaded into a database as  tables. These tables represent NetSuite transactional data related to inventory
 Tip: BigQuery is an easy to use and low cost option to set up a quick database.
 
-2. Using SQL, model these tables so that you can provide a business user with a  single “inventory daily” table that has: [Date, Location, Bin, Status, Item, Quantity,  Value] where quantity is the total number of units of that item in that  Location+Bin+Status for that Date. Value represents the total monetary value for those items.
+2. Using SQL, model these tables so that you can provide a business user with a  single “inventory daily” table that has: [Date, Location, Bin, Status, Item, Quantity,  Value] where quantity is the total number of units of that item in that Location+Bin+Status for that Date. Value represents the total monetary value for those items.
 
 3. Do a data quality check – how does the data look? Are there any issues?
 
@@ -29,7 +29,7 @@ Tip: BigQuery is an easy to use and low cost option to set up a quick database.
 
 ## Table List
 1. Transaction Line – transaction_date, transaction_id, transaction_line, transaction_type,
-type_based_document_number, type_based_document_status, item_id, bin_id, inventory_status_id, location_id,  quantity
+type_based_document_number, type_based_document_status, item_id, bin_id, inventory_status_id, location_id, quantity
 1. Item – id, name
 1. Location – id, name
 1. Costs - effective date, location_id, item_id, cost
