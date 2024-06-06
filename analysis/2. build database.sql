@@ -155,7 +155,7 @@
         -- SELECT * FROM TRANSACTION_LINE LIMIT 100 ;
         -- SUMMARIZE TRANSACTION_LINE ;
 
-                CREATE OR REPLACE VIEW FACT_INVENTORY
+        CREATE OR REPLACE VIEW FACT_INVENTORY
 
         AS
 
@@ -202,12 +202,12 @@
                         AND T.TRANSACTION_DATE  >=  C.COST_START_DATE
                         AND T.TRANSACTION_DATE  <   COALESCE( C.COST_END_DATE, '2099-12-31' )
 
-            ORDER BY
-                     TRANSACTION_DATE
-                    ,ITEM_ID
-                    ,LOCATION_NAME
-                    ,BIN_NAME
-                    ,INVENTORY_STATUS_NAME
+            -- ORDER BY
+            --          TRANSACTION_DATE
+            --         ,ITEM_ID
+            --         ,LOCATION_NAME
+            --         ,BIN_NAME
+            --         ,INVENTORY_STATUS_NAME
 
         )
         ,INVENTORY_AGGREGATE AS (
@@ -231,12 +231,12 @@
             GROUP BY
                     ALL
 
-            ORDER BY
-                     TRANSACTION_DATE
-                    ,ITEM_ID
-                    ,LOCATION_NAME
-                    ,BIN_NAME
-                    ,INVENTORY_STATUS_NAME
+            -- ORDER BY
+            --          TRANSACTION_DATE
+            --         ,ITEM_ID
+            --         ,LOCATION_NAME
+            --         ,BIN_NAME
+            --         ,INVENTORY_STATUS_NAME
 
         )
 
@@ -310,12 +310,12 @@
                     -- AND D.LOCATION_NAME = 'c7a95e433e878be525d03a08d6ab666b'
                     AND ITEM_ID = 355576
 
-            ORDER BY
-                     D.DATE
-                    ,D.ITEM_ID
-                    ,D.LOCATION_NAME
-                    ,D.BIN_NAME
-                    ,D.INVENTORY_STATUS_NAME
+            -- ORDER BY
+            --          D.DATE
+            --         ,D.ITEM_ID
+            --         ,D.LOCATION_NAME
+            --         ,D.BIN_NAME
+            --         ,D.INVENTORY_STATUS_NAME
 
         )
 
