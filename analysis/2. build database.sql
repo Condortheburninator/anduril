@@ -155,53 +155,175 @@
         -- SELECT * FROM TRANSACTION_LINE LIMIT 100 ;
         -- SUMMARIZE TRANSACTION_LINE ;
 
-        CREATE OR REPLACE VIEW FACT_INVENTORY
+                CREATE OR REPLACE VIEW FACT_INVENTORY
 
         AS
 
-        SELECT
-                 TRY_CAST( T.transaction_date AS DATE ) AS TRANSACTION_DATE
-                ,T.transaction_id                       AS TRANSACTION_ID
-                ,T.transaction_line_id                  AS TRANSACTION_LINE_ID
-                ,T.transaction_type                     AS TRANSACTION_TYPE
-                ,T.type_based_document_number           AS TYPE_BASED_DOCUMENT_NUMBER
-                ,T.type_based_document_status           AS TYPE_BASED_DOCUMENT_STATUS
-                ,T.item_id                              AS ITEM_ID
-                ,T.bin_id                               AS BIN_ID
-                ,T.inventory_status_id                  AS INVENTORY_STATUS_ID
-                ,T.location_id                          AS LOCATION_ID
-                ,T.quantity                             AS QUANTITY
-                ,I.ITEM_NAME
-                ,B.BIN_NAME
-                ,N.INVENTORY_STATUS_NAME
-                ,L.LOCATION_NAME
-                ,T.QUANTITY * C.COST                    AS COST
+        WITH
 
-        FROM
-                TRANSACTION_LINE                AS T
+        INVENTORY_CLEANUP AS (
 
-                LEFT JOIN DIM_ITEMS             AS I
-                    ON T.ITEM_ID = I.ITEM_ID
+            SELECT
+                    TRY_CAST( T.transaction_date AS DATE ) AS TRANSACTION_DATE
+                    -- ,T.transaction_id                       AS TRANSACTION_ID
+                    -- ,T.transaction_line_id                  AS TRANSACTION_LINE_ID
+                    -- ,T.transaction_type                     AS TRANSACTION_TYPE
+                    -- ,T.type_based_document_number           AS TYPE_BASED_DOCUMENT_NUMBER
+                    -- ,T.type_based_document_status           AS TYPE_BASED_DOCUMENT_STATUS
+                    ,T.item_id                              AS ITEM_ID
+                    ,T.bin_id                               AS BIN_ID
+                    ,T.inventory_status_id                  AS INVENTORY_STATUS_ID
+                    ,T.location_id                          AS LOCATION_ID
+                    ,T.quantity                             AS QUANTITY
+                    ,I.ITEM_NAME
+                    ,B.BIN_NAME
+                    ,N.INVENTORY_STATUS_NAME
+                    ,L.LOCATION_NAME
+                    ,T.QUANTITY * C.COST                    AS COST
 
-                LEFT JOIN DIM_BINS              AS B
-                    ON T.BIN_ID = B.BIN_ID
+            FROM
+                    TRANSACTION_LINE                AS T
 
-                LEFT JOIN DIM_INVENTORY_STATUS  AS N
-                    ON T.INVENTORY_STATUS_ID = N.INVENTORY_STATUS_ID
+                    LEFT JOIN DIM_ITEMS             AS I
+                        ON T.ITEM_ID = I.ITEM_ID
 
-                LEFT JOIN DIM_LOCATIONS         AS L
-                    ON T.LOCATION_ID = L.LOCATION_ID
+                    LEFT JOIN DIM_BINS              AS B
+                        ON T.BIN_ID = B.BIN_ID
 
-                LEFT JOIN DIM_COSTS             AS C
-                    ON  T.ITEM_ID           = C.ITEM_ID
-                    AND T.LOCATION_ID       = C.LOCATION_ID
-                    AND T.TRANSACTION_DATE  >= C.COST_START_DATE
-                    AND T.TRANSACTION_DATE  < COALESCE( C.COST_END_DATE, '2099-12-31' )
+                    LEFT JOIN DIM_INVENTORY_STATUS  AS N
+                        ON T.INVENTORY_STATUS_ID = N.INVENTORY_STATUS_ID
+
+                    LEFT JOIN DIM_LOCATIONS         AS L
+                        ON T.LOCATION_ID = L.LOCATION_ID
+
+                    LEFT JOIN DIM_COSTS             AS C
+                        ON  T.ITEM_ID           =   C.ITEM_ID
+                        AND T.LOCATION_ID       =   C.LOCATION_ID
+                        AND T.TRANSACTION_DATE  >=  C.COST_START_DATE
+                        AND T.TRANSACTION_DATE  <   COALESCE( C.COST_END_DATE, '2099-12-31' )
+
+            ORDER BY
+                     TRANSACTION_DATE
+                    ,ITEM_ID
+                    ,LOCATION_NAME
+                    ,BIN_NAME
+                    ,INVENTORY_STATUS_NAME
+
+        )
+        ,INVENTORY_AGGREGATE AS (
+
+            SELECT
+                     TRANSACTION_DATE
+                    ,ITEM_ID
+                    ,ITEM_NAME
+                    ,LOCATION_ID
+                    ,LOCATION_NAME
+                    ,BIN_ID
+                    ,BIN_NAME
+                    ,INVENTORY_STATUS_ID
+                    ,INVENTORY_STATUS_NAME
+                    ,SUM(QUANTITY)      AS QUANTITY
+                    ,SUM(COST)          AS COST
+
+            FROM
+                    INVENTORY_CLEANUP
+
+            GROUP BY
+                    ALL
+
+            ORDER BY
+                     TRANSACTION_DATE
+                    ,ITEM_ID
+                    ,LOCATION_NAME
+                    ,BIN_NAME
+                    ,INVENTORY_STATUS_NAME
+
+        )
+
+        ,DAILY_BUILDER AS (
+
+            SELECT
+                    *
+
+            FROM
+                    DIM_DATES
+
+            CROSS JOIN (
+
+                SELECT
+                         DISTINCT
+                         ITEM_ID
+                        -- ,ITEM_NAME
+                        ,LOCATION_NAME
+                        ,BIN_NAME
+                        ,INVENTORY_STATUS_NAME
+
+                FROM
+                        INVENTORY_AGGREGATE
+
+            )
+
+        -- ORDER BY
+        --          DATE
+        --         ,ITEM_ID
+        --         ,LOCATION_NAME
+        --         ,BIN_NAME
+        --         ,INVENTORY_STATUS_NAME
+
+        )
+
+        ,FINAL AS (
+
+            SELECT
+                     D.DATE
+                    ,D.ITEM_ID
+                    -- ,I.ITEM_NAME
+                    ,D.LOCATION_NAME
+                    ,D.BIN_NAME
+                    ,D.INVENTORY_STATUS_NAME
+                    ,I.QUANTITY
+                    ,I.COST
+                    ,SUM( I.QUANTITY )
+                    OVER(
+                        PARTITION BY D.ITEM_ID, D.LOCATION_NAME, D.BIN_NAME, D.INVENTORY_STATUS_NAME
+                        ORDER BY D.DATE
+
+                    )       AS RUNNING_QUANTITY
+                    ,SUM( I.COST )
+                    OVER(
+                        PARTITION BY D.ITEM_ID, D.LOCATION_NAME, D.BIN_NAME, D.INVENTORY_STATUS_NAME
+                        ORDER BY D.DATE
+
+                    )       AS RUNNING_COST
+
+            FROM
+                    DAILY_BUILDER                   AS D
+
+                    LEFT JOIN INVENTORY_AGGREGATE   AS I
+                        ON  D.ITEM_ID       = I.ITEM_ID
+                        AND D.LOCATION_NAME = I.LOCATION_NAME
+                        AND D.BIN_NAME      = I.BIN_NAME
+                        AND D.DATE          = I.TRANSACTION_DATE
+
+            WHERE
+                    1 = 1
+                    -- AND D.LOCATION_NAME = 'c7a95e433e878be525d03a08d6ab666b'
+                    AND ITEM_ID = 355576
+
+            ORDER BY
+                     D.DATE
+                    ,D.ITEM_ID
+                    ,D.LOCATION_NAME
+                    ,D.BIN_NAME
+                    ,D.INVENTORY_STATUS_NAME
+
+        )
+
+        SELECT * FROM FINAL
 
         ;
 
         -- SELECT * FROM FACT_INVENTORY ;
-
 
     -- DIM_DATES
 
@@ -214,7 +336,7 @@
             RANGES AS (
 
                 SELECT
-                        MIN(TRANSACTION_DATE)  AS START_DATE   -- 2020-07-31
+                         MIN(TRANSACTION_DATE)  AS START_DATE   -- 2020-07-31
                         ,MAX(TRANSACTION_DATE)  AS END_DATE     -- 2023-01-30
 
                 FROM
