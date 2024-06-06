@@ -1,16 +1,15 @@
 
 
-
 -- QUESTION 4-A
 
     SELECT
              DATE
-            ,ITEM_ID                AS ITEM
-            ,INVENTORY_STATUS_NAME  AS STATUS
-            ,LOCATION_NAME          AS LOCATION
-            ,BIN_NAME               AS BIN
-            ,SUM(QUANTITY)          AS QUANTITY
-            ,SUM(COST)              AS VALUE
+            ,ITEM_ID                    AS ITEM
+            ,INVENTORY_STATUS_NAME      AS STATUS
+            ,LOCATION_NAME              AS LOCATION
+            ,BIN_NAME                   AS BIN
+            ,SUM(RUNNING_QUANTITY)      AS QUANTITY
+            ,SUM(RUNNING_COST)          AS VALUE
 
     FROM
             FACT_INVENTORY
@@ -34,8 +33,7 @@
 -- QUESTION 4-B
 
     SELECT
-             SUM(COST)      AS VALUE
-            --  SUM(RUNNING_COST)      AS VALUE
+             SUM(RUNNING_COST)      AS VALUE
 
     FROM
             FACT_INVENTORY
@@ -50,9 +48,7 @@
 -- QUESTION 4-C
 
     SELECT
-            --  ITEM_ID
-            -- ,SUM(COST)
-             SUM(COST)  AS VALUE
+             SUM(RUNNING_COST)  AS VALUE
 
     FROM
             FACT_INVENTORY
@@ -63,5 +59,3 @@
             AND DATE            = '2022-01-01'
 
     ;
-
-

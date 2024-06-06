@@ -86,6 +86,7 @@
 ---
 
 ## :next_track_button: Next Steps
+- refactor fact inventory to be more performant
 - Model the data in dbt
 - Set up daily (nightly) snapshots for inventory
 
