@@ -42,7 +42,7 @@
 
 ---
 
-## Answers
+## :white_check_mark: Answers
 
 1. Do a data quality check – how does the data look? Are there any issues?
 
