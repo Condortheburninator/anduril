@@ -14,21 +14,34 @@
 
 ---
 
+## :books: Table of Contents
+
+- [Approach](#-approach)
+- [Next Steps](#next-steps)
+- [Answers](#answers)
+- [Bibliography](#book-bibliography)
+
+---
+
 ## 🎯 Approach
 
 1. align on data warehouse --> :duck: duckdb
 1. load data into warehouse (raw)
 1. data quality review
-1. given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
-    1. convert `transaction_date` from a datetime to a date
-    1. `ITEM.name` --> `ITEM.ITEM_NAME`
+1. model the data in :star: star schema
+    1. given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
+        1. convert `transaction_date` from a datetime to a date
+        1. `ITEM.name` --> `ITEM.ITEM_NAME`
 1. build a fact table for inventory
-    1. JOIN dimensions VIEWS to it
+    1. JOIN dimension VIEWS to it
 1. modify FACT_INVENTORY
     1. calendar table
     1. running total inventory table
 1. answer questions
 
+---
+
+## Answers
 
 ---
 
