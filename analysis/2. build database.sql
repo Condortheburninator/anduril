@@ -2,18 +2,18 @@
 
 -- CREATE TABLES
 
-    -- CREATE OR REPLACE TABLE BIN                 AS FROM read_csv_auto('./files/data/bin.csv')                                    ;
-    -- CREATE OR REPLACE TABLE COSTS               AS FROM read_csv_auto('./files/data/costs.csv', types = {'date' : 'VARCHAR'} )   ;
-    -- CREATE OR REPLACE TABLE INVENTORY_STATUS    AS FROM read_csv_auto('./files/data/inventory_status.csv')                       ;
-    -- CREATE OR REPLACE TABLE ITEM                AS FROM read_csv_auto('./files/data/item.csv')                                   ;
-    -- CREATE OR REPLACE TABLE LOCATION            AS FROM read_csv_auto('./files/data/location.csv')                               ;
-    -- CREATE OR REPLACE TABLE TRANSACTION_LINE    AS FROM read_csv_auto('./files/data/transaction_line.csv')                       ;
+    CREATE OR REPLACE TABLE BIN                 AS FROM read_csv_auto('./files/data/bin.csv')                                    ;
+    CREATE OR REPLACE TABLE COSTS               AS FROM read_csv_auto('./files/data/costs.csv', types = {'date' : 'VARCHAR'} )   ;
+    CREATE OR REPLACE TABLE INVENTORY_STATUS    AS FROM read_csv_auto('./files/data/inventory_status.csv')                       ;
+    CREATE OR REPLACE TABLE ITEM                AS FROM read_csv_auto('./files/data/item.csv')                                   ;
+    CREATE OR REPLACE TABLE LOCATION            AS FROM read_csv_auto('./files/data/location.csv')                               ;
+    CREATE OR REPLACE TABLE TRANSACTION_LINE    AS FROM read_csv_auto('./files/data/transaction_line.csv')                       ;
 
 -- CREATE VIEWS
 
     -- ✅ BIN
 
-        CREATE OR REPLACE VIEW DIM_BIN
+        CREATE OR REPLACE VIEW DIM_BINS
 
         AS
 
@@ -25,6 +25,8 @@
                 BIN
 
         ;
+
+        -- SELECT * FROM DIM_BINS ;
 
     -- ✅ COSTS
 
@@ -112,7 +114,7 @@
 
         -- SELECT * FROM ITEM ;
 
-        CREATE OR REPLACE VIEW DIM_ITEM
+        CREATE OR REPLACE VIEW DIM_ITEMS
 
         AS
 
@@ -125,13 +127,13 @@
 
         ;
 
-        SELECT * FROM DIM_ITEM ;
+        -- SELECT * FROM DIM_ITEMS ;
 
     -- ✅ LOCATION
 
         -- SELECT * FROM LOCATION ;
 
-        CREATE OR REPLACE VIEW DIM_LOCATION
+        CREATE OR REPLACE VIEW DIM_LOCATIONS
 
         AS
 
@@ -144,7 +146,7 @@
 
         ;
 
-        SELECT * FROM DIM_LOCATION ;
+        -- SELECT * FROM DIM_LOCATIONS ;
 
     -- ✅ TRANSACTION LINE
 
@@ -163,9 +165,9 @@
                 ,T.type_based_document_number           AS TYPE_BASED_DOCUMENT_NUMBER
                 ,T.type_based_document_status           AS TYPE_BASED_DOCUMENT_STATUS
                 ,T.item_id                              AS ITEM_ID
-                -- ,T.bin_id
-                -- ,T.inventory_status_id
-                -- ,T.location_id
+                ,T.bin_id                               AS BIN_ID
+                ,T.inventory_status_id                  AS INVENTORY_STATUS_ID
+                ,T.location_id                          AS LOCATION_ID
                 ,T.quantity                             AS QUANTITY
                 ,I.ITEM_NAME
                 ,B.BIN_NAME
@@ -175,19 +177,23 @@
         FROM
                 TRANSACTION_LINE                AS T
 
-                LEFT JOIN DIM_ITEM              AS I
+                LEFT JOIN DIM_ITEMS             AS I
                     ON T.ITEM_ID = I.ITEM_ID
 
-                LEFT JOIN DIM_BIN               AS B
+                LEFT JOIN DIM_BINS              AS B
                     ON T.BIN_ID = B.BIN_ID
 
                 LEFT JOIN DIM_INVENTORY_STATUS  AS N
                     ON T.INVENTORY_STATUS_ID = N.INVENTORY_STATUS_ID
 
-                LEFT JOIN DIM_LOCATION          AS L
+                LEFT JOIN DIM_LOCATIONS         AS L
                     ON T.LOCATION_ID = L.LOCATION_ID
+
+                -- LEFT JOIN DIM_COSTS
 
         ;
 
-        SELECT * FROM FACT_INVENTORY ;
+        -- SELECT * FROM FACT_INVENTORY ;
+
+
 
