@@ -76,10 +76,11 @@
 ![Question 4-C Answer](./images/question4-c.png)
 
 5. Open Ended: Are there any interesting insights that you’d like to discuss?
-- snapshots:
+
+- Snapshots:
     - From a modelling perspective, I think it'd be much easier from an analytics perspective to take nightly snapshots of the ending inventory postition for items
     - Rather than to build a daily view with code
--
+- I'd like to better understand if there aren't certain transaction types that should be excluded from the analysis
 
 
 ---
