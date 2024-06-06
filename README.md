@@ -17,8 +17,8 @@
 ## :books: Table of Contents
 
 - [Approach](#-approach)
-- [Next Steps](#next-steps)
-- [Answers](#answers)
+- [Answers](#white_check_mark-answers)
+- [Next Steps](#next_track_button-next-steps)
 - [Bibliography](#book-bibliography)
 
 ---
