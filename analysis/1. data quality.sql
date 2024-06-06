@@ -160,21 +160,23 @@ ORDER BY
 -- WEIRD COSTS IN COST TABLE
 
 SELECT
-         SUM(
-            CASE
-                WHEN DAYOFMONTH(COST_START_DATE) = 1
-                THEN 1
-                ELSE 0
-             END
-        )           AS FIRST_DAY_COUNT
-        ,SUM(
-            CASE
-                WHEN DAYOFMONTH(COST_START_DATE) != 1
-                THEN 1
-                ELSE 0
-             END
-        )           AS NOT_FIRST_DAY
-        ,FIRST_DAY_COUNT / COUNT(*)
+        DISTINCT
+        COST_START_DATE
+        --  SUM(
+        --     CASE
+        --         WHEN DAYOFMONTH(COST_START_DATE) = 1
+        --         THEN 1
+        --         ELSE 0
+        --      END
+        -- )           AS FIRST_DAY_COUNT
+        -- ,SUM(
+        --     CASE
+        --         WHEN DAYOFMONTH(COST_START_DATE) != 1
+        --         THEN 1
+        --         ELSE 0
+        --      END
+        -- )           AS NOT_FIRST_DAY
+        -- ,FIRST_DAY_COUNT / COUNT(*)
 
 FROM
         DIM_COSTS
@@ -182,13 +184,29 @@ FROM
 WHERE
         1 = 1
         -- AND ITEM_ID = 314
-        -- AND DAYOFMONTH(COST_START_DATE) != 1
+        AND DAYOFMONTH(COST_START_DATE) != 1
         -- AND DAYOFMONTH(date) != 1
         -- AND EXTRACT(DAY FROM date) != 1
 
 -- ORDER BY
-        --  ITEM_ID
-        -- ,LOCATION_ID
-        -- ,date
+--          ITEM_ID
+--         ,LOCATION_ID
+--         ,COST_START_DATE
+
+;
+
+SELECT
+        *
+
+FROM
+        DIM_COSTS
+
+WHERE
+        1 = 1
+
+ORDER BY
+         ITEM_ID
+        ,LOCATION_ID
+        ,COST_START_DATE
 
 ;
