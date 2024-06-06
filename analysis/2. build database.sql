@@ -173,6 +173,7 @@
                 ,B.BIN_NAME
                 ,N.INVENTORY_STATUS_NAME
                 ,L.LOCATION_NAME
+                ,T.QUANTITY * C.COST                    AS COST
 
         FROM
                 TRANSACTION_LINE                AS T
@@ -189,7 +190,11 @@
                 LEFT JOIN DIM_LOCATIONS         AS L
                     ON T.LOCATION_ID = L.LOCATION_ID
 
-                -- LEFT JOIN DIM_COSTS
+                LEFT JOIN DIM_COSTS             AS C
+                    ON  T.ITEM_ID           = C.ITEM_ID
+                    AND T.LOCATION_ID       = C.LOCATION_ID
+                    AND T.TRANSACTION_DATE  >= C.COST_START_DATE
+                    AND T.TRANSACTION_DATE  < COALESCE( C.COST_END_DATE, '2099-12-31' )
 
         ;
 
