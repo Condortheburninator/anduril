@@ -203,4 +203,48 @@
         -- SELECT * FROM FACT_INVENTORY ;
 
 
+    -- DIM_DATES
+
+        CREATE OR REPLACE VIEW DIM_DATES
+
+        AS
+
+            WITH
+
+            RANGES AS (
+
+                SELECT
+                        MIN(TRANSACTION_DATE)  AS START_DATE   -- 2020-07-31
+                        ,MAX(TRANSACTION_DATE)  AS END_DATE     -- 2023-01-30
+
+                FROM
+                        FACT_INVENTORY
+
+            ),
+
+            GENERATE_DATE AS (
+
+                SELECT
+                        CAST( RANGE AS DATE ) AS DATE_KEY
+
+                FROM
+                        RANGE (
+                                DATE '2020-07-31'
+                                ,DATE '2023-01-31'
+                                ,INTERVAL 1 DAY
+                        )
+            )
+
+            SELECT
+                    DATE_KEY AS DATE
+
+            FROM
+                    GENERATE_DATE
+
+            ORDER BY
+                    DATE DESC
+
+            ;
+
+            -- SELECT * FROM DIM_DATES ;
 
