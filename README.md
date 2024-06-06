@@ -25,34 +25,63 @@
 
 ## 🎯 Approach
 
-1. align on data warehouse --> :duck: duckdb
-1. load data into warehouse (raw)
-1. data quality review
-1. model the data in :star: star schema
-    1. given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
-        1. convert `transaction_date` from a datetime to a date
+1. Align on data warehouse --> :duck: duckdb
+1. Load data into warehouse (raw)
+1. Data quality review
+1. Model the data in :star: star schema
+    1. Given that the data sets are fairly simple, build `VIEWS` on top of the RAW layer to handle for simple transformations
+    1. Example transformations below :point_down:
+        1. Convert `transaction_date` from a datetime to a date
         1. `ITEM.name` --> `ITEM.ITEM_NAME`
-1. build a fact table for inventory
+1. Build a fact table for inventory
     1. JOIN dimension VIEWS to it
-1. modify FACT_INVENTORY
-    1. calendar table
-    1. running total inventory table
-1. answer questions
+1. Modify FACT_INVENTORY
+    1. Calendar table
+    1. Running total inventory table
+1. Answer questions
 
 ---
 
 ## Answers
 
+1. Do a data quality check – how does the data look? Are there any issues?
+
+    1. `ITEM.name` can correspond to multiple `ITEM.id`
+        1. specifically 34 `ITEM.name` correspond to multiple `ITEM.id`
+    1. `cost` table has a number of peculiarities
+        1. 12 items do not have costs associated with them due to missing `LOCATION_ID` in the `costs` table
+            1. NULL values when joining the `cost` table to `transaction_line`
+        1. 99% of records in the table get a date starting at the first of the month
+            1. however, there are 4,110 instances of records that have a non-first day of the month cost
+            1. not sure if this is an off cycle adjustment
+                1. ex. item 314 at location 102 has a new cost on 2020-03-19
+        1. Inconsistent costs - I'd need to better understand why there are such huge swings in costs here. Write-offs?
+            1. ex. item 314 in location 101, goes from:
+                1. 2020-08-01 --> 1388.37
+                1. 2021-02-01 -->    0.37
+                1. 2021-03-01 --> 1196.59
+                1. 2021-04-01 -->    0.37
+                1. 2021-05-01 --> 1374.37
+
+1. What is the quantity, and location/bin/status combos of item 355576 on  date 2022-11-21?
+1. What is the total value of item 209372 on Date 2022-06-05?
+1. What is the total value of inventory in Location c7a95e433e878be525d03a08d6ab666b on 2022-01-01?
+
+
+
+
 ---
 
 ## Next Steps
-- model the data in dbt
-- set up daily (nightly) snapshots for inventory
+- Model the data in dbt
+- Set up daily (nightly) snapshots for inventory
 
 ---
 
 ## :book: Bibliography
 
-- [DuckDB Tutorial For Beginners](https://www.youtube.com/watch?v=ZX5FdqzGT1E)
-- [DuckDB Tutorial - DuckDB course for beginners](https://www.youtube.com/watch?v=AjsB6lM2-zw)
-- [Ingesting #csv file from #github into #duckdb](https://www.youtube.com/shorts/49p4HyNFniE)
+- :video_camera: [DuckDB Tutorial For Beginners](https://www.youtube.com/watch?v=ZX5FdqzGT1E)
+- :video_camera: [DuckDB Tutorial - DuckDB course for beginners](https://www.youtube.com/watch?v=AjsB6lM2-zw)
+- :video_camera: [Ingesting #csv file from #github into #duckdb](https://www.youtube.com/shorts/49p4HyNFniE)
+
+---
