@@ -63,16 +63,28 @@
                 1. 2021-04-01 -->    0.37
                 1. 2021-05-01 --> 1374.37
 
-1. What is the quantity, and location/bin/status combos of item 355576 on  date 2022-11-21?
-1. What is the total value of item 209372 on Date 2022-06-05?
-1. What is the total value of inventory in Location c7a95e433e878be525d03a08d6ab666b on 2022-01-01?
+2. What is the quantity, and location/bin/status combos of item 355576 on date 2022-11-21?
 
+![Question 4-A Answer](./images/question4-a.png)
 
+3. What is the total value of item 209372 on Date 2022-06-05?
+
+![Question 4-B Answer](./images/question4-b.png)
+
+4. What is the total value of inventory in Location c7a95e433e878be525d03a08d6ab666b on 2022-01-01?
+
+![Question 4-C Answer](./images/question4-c.png)
+
+5. Open Ended: Are there any interesting insights that you’d like to discuss?
+- snapshots:
+    - From a modelling perspective, I think it'd be much easier from an analytics perspective to take nightly snapshots of the ending inventory postition for items
+    - Rather than to build a daily view with code
+-
 
 
 ---
 
-## Next Steps
+## :next_track_button: Next Steps
 - Model the data in dbt
 - Set up daily (nightly) snapshots for inventory
 
@@ -83,5 +95,6 @@
 - :video_camera: [DuckDB Tutorial For Beginners](https://www.youtube.com/watch?v=ZX5FdqzGT1E)
 - :video_camera: [DuckDB Tutorial - DuckDB course for beginners](https://www.youtube.com/watch?v=AjsB6lM2-zw)
 - :video_camera: [Ingesting #csv file from #github into #duckdb](https://www.youtube.com/shorts/49p4HyNFniE)
+- :scroll: [Generate date ranges](https://gist.github.com/adityawarmanfw/0612333605d351f2f1fe5c87e1af20d2)
 
 ---
