@@ -30,7 +30,7 @@
                 ,name     AS BIN_NAME
 
         FROM
-                BIN
+                BRONZE.BIN
 
         ;
 
@@ -40,7 +40,7 @@
 
         -- SELECT * FROM COSTS  ;
 
-        CREATE OR REPLACE VIEW DIM_COSTS
+        CREATE OR REPLACE VIEW GOLD.DIM_COSTS
 
         AS
 
@@ -55,7 +55,7 @@
                     ,cost                                               AS COST
 
             FROM
-                    COSTS
+                    BRONZE.COSTS
 
             WHERE
                     1 = 1
@@ -93,7 +93,7 @@
 
         -- SELECT * FROM INVENTORY_STATUS ;
 
-        CREATE OR REPLACE VIEW DIM_INVENTORY_STATUS
+        CREATE OR REPLACE VIEW GOLD.DIM_INVENTORY_STATUS
 
         AS
 
@@ -102,7 +102,7 @@
                 ,name   AS INVENTORY_STATUS_NAME
 
         FROM
-                INVENTORY_STATUS
+                BRONZE.INVENTORY_STATUS
 
         ;
 
@@ -112,7 +112,7 @@
 
         -- SELECT * FROM ITEM ;
 
-        CREATE OR REPLACE VIEW DIM_ITEMS
+        CREATE OR REPLACE VIEW GOLD.DIM_ITEMS
 
         AS
 
@@ -121,7 +121,7 @@
                 ,name   AS ITEM_NAME
 
         FROM
-                ITEM
+                BRONZE.ITEM
 
         ;
 
@@ -131,7 +131,7 @@
 
         -- SELECT * FROM LOCATION ;
 
-        CREATE OR REPLACE VIEW DIM_LOCATIONS
+        CREATE OR REPLACE VIEW GOLD.DIM_LOCATIONS
 
         AS
 
@@ -140,7 +140,7 @@
                 ,name   AS LOCATION_NAME
 
         FROM
-                LOCATION
+                BRONZE.LOCATION
 
         ;
 
@@ -148,7 +148,7 @@
 
     -- DIM_DATES
 
-        CREATE OR REPLACE VIEW DIM_DATES
+        CREATE OR REPLACE VIEW GOLD.DIM_DATES
 
         AS
 
@@ -161,7 +161,7 @@
                         ,MAX(TRANSACTION_DATE)  AS END_DATE     -- 2023-01-30
 
                 FROM
-                        FACT_INVENTORY
+                        BRONZE.TRANSACTION_LINE
 
             ),
 
@@ -197,7 +197,7 @@
         -- SUMMARIZE TRANSACTION_LINE ;
 
         -- CREATE OR REPLACE VIEW FACT_INVENTORY
-        CREATE OR REPLACE TABLE FACT_INVENTORY
+        CREATE OR REPLACE TABLE GOLD.FACT_INVENTORY
 
         AS
 
@@ -224,21 +224,21 @@
                     ,T.QUANTITY * C.COST                    AS COST
 
             FROM
-                    TRANSACTION_LINE                AS T
+                    BRONZE.TRANSACTION_LINE              AS T
 
-                    LEFT JOIN DIM_ITEMS             AS I
+                    LEFT JOIN GOLD.DIM_ITEMS             AS I
                         ON T.ITEM_ID = I.ITEM_ID
 
-                    LEFT JOIN DIM_BINS              AS B
+                    LEFT JOIN GOLD.DIM_BINS              AS B
                         ON T.BIN_ID = B.BIN_ID
 
-                    LEFT JOIN DIM_INVENTORY_STATUS  AS N
+                    LEFT JOIN GOLD.DIM_INVENTORY_STATUS  AS N
                         ON T.INVENTORY_STATUS_ID = N.INVENTORY_STATUS_ID
 
-                    LEFT JOIN DIM_LOCATIONS         AS L
+                    LEFT JOIN GOLD.DIM_LOCATIONS         AS L
                         ON T.LOCATION_ID = L.LOCATION_ID
 
-                    LEFT JOIN DIM_COSTS             AS C
+                    LEFT JOIN GOLD.DIM_COSTS             AS C
                         ON  T.ITEM_ID           =   C.ITEM_ID
                         AND T.LOCATION_ID       =   C.LOCATION_ID
                         AND T.TRANSACTION_DATE  >=  C.COST_START_DATE
@@ -288,7 +288,7 @@
                     *
 
             FROM
-                    DIM_DATES
+                    GOLD.DIM_DATES
 
             CROSS JOIN (
 
