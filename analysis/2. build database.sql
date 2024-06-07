@@ -43,16 +43,17 @@
         START_DATE AS (
 
             SELECT
-                     TRY_CAST(STRPTIME(date, '%m/%d/%Y' ) AS DATE)  AS COST_START_DATE
-                    ,item_id                                        AS ITEM_ID
-                    ,location_id                                    AS LOCATION_ID
-                    ,cost                                           AS COST
+                     TRY_CAST( STRPTIME( date, '%m/%d/%Y' ) AS DATE )   AS COST_START_DATE
+                    ,item_id                                            AS ITEM_ID
+                    ,location_id                                        AS LOCATION_ID
+                    ,cost                                               AS COST
 
             FROM
                     COSTS
 
             WHERE
                     1 = 1
+
         )
 
         SELECT
@@ -80,18 +81,7 @@
 
         ;
 
-        -- SELECT
-        --         *
-
-        -- FROM
-        --         DIM_COSTS
-
-        -- WHERE
-        --         1 = 1
-        --         AND ITEM_ID      = 314
-        --         AND LOCATION_ID  = 102
-
-        -- ;
+        -- SELECT * FROM DIM_COSTS ;
 
     -- ✅ INVENTORY_STATUS
 
@@ -150,12 +140,58 @@
 
         -- SELECT * FROM DIM_LOCATIONS ;
 
+    -- DIM_DATES
+
+        CREATE OR REPLACE VIEW DIM_DATES
+
+        AS
+
+            WITH
+
+            RANGES AS (
+
+                SELECT
+                         MIN(TRANSACTION_DATE)  AS START_DATE   -- 2020-07-31
+                        ,MAX(TRANSACTION_DATE)  AS END_DATE     -- 2023-01-30
+
+                FROM
+                        FACT_INVENTORY
+
+            ),
+
+            GENERATE_DATE AS (
+
+                SELECT
+                        CAST( RANGE AS DATE ) AS DATE_KEY
+
+                FROM
+                        RANGE (
+                                 DATE '2020-07-31'
+                                ,DATE '2023-01-31'
+                                ,INTERVAL 1 DAY
+                        )
+            )
+
+            SELECT
+                    DATE_KEY AS DATE
+
+            FROM
+                    GENERATE_DATE
+
+            ORDER BY
+                    DATE DESC
+
+            ;
+
+            -- SELECT * FROM DIM_DATES ;
+
     -- ✅ TRANSACTION LINE
 
         -- SELECT * FROM TRANSACTION_LINE LIMIT 100 ;
         -- SUMMARIZE TRANSACTION_LINE ;
 
-        CREATE OR REPLACE VIEW FACT_INVENTORY
+        -- CREATE OR REPLACE VIEW FACT_INVENTORY
+        CREATE OR REPLACE TABLE FACT_INVENTORY
 
         AS
 
@@ -164,7 +200,7 @@
         INVENTORY_CLEANUP AS (
 
             SELECT
-                    TRY_CAST( T.transaction_date AS DATE ) AS TRANSACTION_DATE
+                    TRY_CAST( T.transaction_date AS DATE )  AS TRANSACTION_DATE
                     -- ,T.transaction_id                       AS TRANSACTION_ID
                     -- ,T.transaction_line_id                  AS TRANSACTION_LINE_ID
                     -- ,T.transaction_type                     AS TRANSACTION_TYPE
@@ -308,7 +344,7 @@
             WHERE
                     1 = 1
                     -- AND D.LOCATION_NAME = 'c7a95e433e878be525d03a08d6ab666b'
-                    AND ITEM_ID = 355576
+                    -- AND ITEM_ID = 355576
 
             -- ORDER BY
             --          D.DATE
@@ -319,54 +355,8 @@
 
         )
 
-        SELECT * FROM FINAL
+        SELECT * FROM FINAL WHERE RUNNING_COST IS NOT NULL
 
         ;
 
         -- SELECT * FROM FACT_INVENTORY ;
-
-    -- DIM_DATES
-
-        CREATE OR REPLACE VIEW DIM_DATES
-
-        AS
-
-            WITH
-
-            RANGES AS (
-
-                SELECT
-                         MIN(TRANSACTION_DATE)  AS START_DATE   -- 2020-07-31
-                        ,MAX(TRANSACTION_DATE)  AS END_DATE     -- 2023-01-30
-
-                FROM
-                        FACT_INVENTORY
-
-            ),
-
-            GENERATE_DATE AS (
-
-                SELECT
-                        CAST( RANGE AS DATE ) AS DATE_KEY
-
-                FROM
-                        RANGE (
-                                 DATE '2020-07-31'
-                                ,DATE '2023-01-31'
-                                ,INTERVAL 1 DAY
-                        )
-            )
-
-            SELECT
-                    DATE_KEY AS DATE
-
-            FROM
-                    GENERATE_DATE
-
-            ORDER BY
-                    DATE DESC
-
-            ;
-
-            -- SELECT * FROM DIM_DATES ;
-
