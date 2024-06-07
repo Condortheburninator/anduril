@@ -1,13 +1,19 @@
 
 
+-- CREATE SCHEMAS
+
+    CREATE SCHEMA IF NOT EXISTS BRONZE ;
+    CREATE SCHEMA IF NOT EXISTS GOLD   ;
+
+
 -- CREATE TABLES
 
-    CREATE OR REPLACE TABLE BIN                 AS FROM read_csv_auto('./files/data/bin.csv')                                    ;
-    CREATE OR REPLACE TABLE COSTS               AS FROM read_csv_auto('./files/data/costs.csv', types = {'date' : 'VARCHAR'} )   ;
-    CREATE OR REPLACE TABLE INVENTORY_STATUS    AS FROM read_csv_auto('./files/data/inventory_status.csv')                       ;
-    CREATE OR REPLACE TABLE ITEM                AS FROM read_csv_auto('./files/data/item.csv')                                   ;
-    CREATE OR REPLACE TABLE LOCATION            AS FROM read_csv_auto('./files/data/location.csv')                               ;
-    CREATE OR REPLACE TABLE TRANSACTION_LINE    AS FROM read_csv_auto('./files/data/transaction_line.csv')                       ;
+    CREATE OR REPLACE TABLE BRONZE.BIN                 AS FROM read_csv_auto('./files/data/bin.csv')                                    ;
+    CREATE OR REPLACE TABLE BRONZE.COSTS               AS FROM read_csv_auto('./files/data/costs.csv', types = {'date' : 'VARCHAR'} )   ;
+    CREATE OR REPLACE TABLE BRONZE.INVENTORY_STATUS    AS FROM read_csv_auto('./files/data/inventory_status.csv')                       ;
+    CREATE OR REPLACE TABLE BRONZE.ITEM                AS FROM read_csv_auto('./files/data/item.csv')                                   ;
+    CREATE OR REPLACE TABLE BRONZE.LOCATION            AS FROM read_csv_auto('./files/data/location.csv')                               ;
+    CREATE OR REPLACE TABLE BRONZE.TRANSACTION_LINE    AS FROM read_csv_auto('./files/data/transaction_line.csv')                       ;
 
 -- CREATE VIEWS
 
@@ -15,7 +21,7 @@
 
         -- SELECT * FROM BIN
 
-        CREATE OR REPLACE VIEW DIM_BINS
+        CREATE OR REPLACE VIEW GOLD.DIM_BINS
 
         AS
 
